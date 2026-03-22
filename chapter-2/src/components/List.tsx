@@ -1,8 +1,14 @@
-const List = (props) : Element => {
-    console.log(props)
+type Tech = 'REACT' | 'NEXT' | 'VUE' | 'SVELTE' | 'ANGULAR' | 'REACT-NATIVE';
+
+interface ListProps {
+    tech: Tech;
+}
+
+//구조 분해 할당 사용!
+const List = (props: ListProps) => {
     return (
-        <li>
-            {props.tech}
+        <li style={{listStyle:'none'}}>
+            {props.tech === 'REACT' ? '고구마와 함께하는 리액트' : props.tech}
         </li>
     )
 }
