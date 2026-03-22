@@ -1,22 +1,21 @@
 import './App.css'
-
-import List from './components/List';
+import {useState} from 'react';
 
 function App() {
-  const nickname = '여니'
-  const sweetPotato = '고구마'
-  const array = ['REACT', 'NEXT', 'VUE', 'SVELTE', 'ANGULAR', 'REACT-NATIVE']
+  const [count, setCount] = useState<number>(0);
+
+  const handleIncreaseNumber = () => {
+      setCount(count => count + 1)
+      setCount(count => count + 1)
+      setCount(count => count + 1)
+      setCount(count => count + 1)
+      setCount(count => count + 1)
+      setCount(count => count + 1)
+  }
   return (
     <>
-      <strong className = 'school'>이화여자대학교</strong>
-      <p style={{color:'purple', fontWeight:'bold', fontSize:'3rem'}}>{nickname}/이홍연</p>
-      <h1>{`${nickname}는 ${sweetPotato} 아이스크림을 좋아합니다`}</h1>
-      <ul>
-        {array.map((yaho, index) => (
-        // 2) <li key = {index}>{yaho}</li> → <List /> 로 교체
-        <List key={index} tech={yaho}/>
-        ))}
-      </ul>
+      <h1>{count}</h1>
+      <button onClick={handleIncreaseNumber}>숫자 증가</button>
     </>
   )
 }
