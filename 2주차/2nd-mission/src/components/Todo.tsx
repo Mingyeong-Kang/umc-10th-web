@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import type { TTodo } from '../types/todo';
+import type { TTodo } from '../types/Todo';
 
 
 const Todo = () => {
@@ -52,7 +52,7 @@ const Todo = () => {
                 <div className="render-container__section">
                     <h2 className="render-container__title">할 일</h2>
                     <ul id='todo-list' className="render-container__list">
-                        {todos.map((todo, index) => (
+                        {todos.map((todo) => (
                             <li key={todo.id} className="render-container__item">
                                 <span className="render-container__item-text">{todo.text}</span>
                                 <button
@@ -77,7 +77,7 @@ const Todo = () => {
                 <div className="render-container__section">
                     <h2 className="render-container__title">완료</h2>
                     <ul id='todo-list' className="render-container__list">
-                        {doneTodos.map((todo, index) => (
+                        {doneTodos.map((todo) => (
                             <li key={todo.id} className="render-container__item">
                                 <span className="render-container__item-text">{todo.text}</span>
                                 <button 
