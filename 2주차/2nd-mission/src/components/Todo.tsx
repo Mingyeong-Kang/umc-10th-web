@@ -1,12 +1,22 @@
 import TodoForm from "./TodoForm";
 import TodoList from "./TodoList";
 import { useTodo } from "../context/TodoContext";
+import { THEME, useTheme } from "../context/ThemeProvider";
+import ThemeToggleButton from "./ThemeToggleButton";
+import clsx from "clsx";
 
 const Todo = () => {
   const {todos, handleCompleteTodo, handleDeleteTodo, doneTodos} = useTodo();
+  const { theme } = useTheme();
+  
+  const isLightMode = theme == THEME.LIGHT;
 
     return (
-      <div className="todo-container">
+      <>
+      <ThemeToggleButton></ThemeToggleButton>
+      <div className={clsx(
+        "todo-container", isLightMode ? "light" : "dark" //클래스만 주입
+        )}> 
         <h1 className="todo-container__header">Yeoni TODO</h1>
         <TodoForm></TodoForm>
         <div className="render-container">
@@ -26,6 +36,7 @@ const Todo = () => {
           ></TodoList>
         </div>
       </div>
+    </>
     );
   
 };
