@@ -1,0 +1,99 @@
+/* 전체 컨테이너 */
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  text-align: center;
+}
+
+/* 제목 */
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* 입력 영역 */
+.form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 추가 버튼 */
+.add-btn {
+  background: #28a745;
+  font-weight: 500;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #218838;
+}
+
+/* 리스트 영역 */
+.lists {
+  display: flex;
+  gap: 20px;
+}
+.lists section{
+  flex:1;
+}
+
+/* 서브 타이틀 */
+.sub-title {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* 리스트 아이템 */
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+/* 공통 버튼 */
+.btn {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
+/* 완료 버튼 */
+.complete {
+  background: #28a745;
+}
+
+.complete:hover {
+  background: #218838;
+}
+
+/* 삭제 버튼 */
+.delete {
+  background: #dc3545;
+}
+
+.delete:hover {
+  background: #c82333;
+}
