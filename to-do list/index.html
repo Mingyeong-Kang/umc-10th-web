@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ToDo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="todo">
+    <h1 class="todo__title">ToDo List</h1>
+
+    <div class="todo__input-area">
+      <input type="text" id="todo-input" class="todo__input" placeholder="할 일 입력">
+      <button id="add-btn" class="todo__add-btn">추가</button>
+    </div>
+
+    <h2 class="todo__subtitle">할 일</h2>
+    <ul id="todo-list" class="todo__list"></ul>
+
+    <h2 class="todo__subtitle">완료</h2>
+    <ul id="completed-list" class="todo__list todo__list--completed"></ul>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
