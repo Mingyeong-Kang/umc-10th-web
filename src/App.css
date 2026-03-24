@@ -1,4 +1,4 @@
-/* 전체 컨테이너 */
+
 .container {
   background: white;
   padding: 20px;
@@ -6,6 +6,10 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 360px;
   text-align: center;
+}
+.dark .container{
+  background: #111827;
+  color:white;
 }
 
 /* 제목 */
