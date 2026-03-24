@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { PropsWithChildren } from "react";
-import type { TTodo } from "../types/todo";
+import type { TTodo } from "../../types/todo";
 
 interface ITodoContext {
   todos: TTodo[];

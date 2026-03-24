@@ -1,12 +1,12 @@
-import Todo from "./components/Todo";
-import { TodoProvider } from "./context/TodoContext";
+import ContextPage from "../src/Week2-Mission2/ContextPage";
+import { ThemeProvider } from "./Week2-Mission2/context/ThemeProvider";
 
-const App = () => {
+function App() {
   return (
-    <TodoProvider>
-      <Todo />
-    </TodoProvider>
+    <ThemeProvider>
+      <ContextPage />
+    </ThemeProvider>
   );
-};
+}
 
 export default App;
