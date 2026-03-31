@@ -3,7 +3,6 @@ import { HomePage } from "./pages/HomePage";
 import { MoviesPage } from "./pages/MoviesPage";
 import { MyPage } from "./pages/MyPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
-import "./App.css";
 
 const routes = [
   { path: "/", element: <HomePage /> },
