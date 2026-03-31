@@ -51,7 +51,8 @@ export default function MoviePage() {
     }
 
     return (
-    <>
+    <>  
+        {/* 페이지네이션 코드 */}
         <div className="flex items-center justify-center gap-6 mt-5">
             <button 
                 className="bg-[#dda5e3] text-white px-6 py-3 rounded-lg shadow-md
@@ -69,6 +70,8 @@ export default function MoviePage() {
                 {`>`}
             </button>
         </div>
+        
+        {/* 무비카드 코드 */}
         {isPending && (
             <div className="flex items-center justify-center h-dvh">
                 <LoadingSpinner></LoadingSpinner>
