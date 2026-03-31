@@ -1,19 +1,21 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import RootLayout from "./layout/root-layout";
-import HomePage from "./pages/home";
-import MoviesPage from "./pages/movies";
-import NotFound from "./pages/not-found";
+import './App.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+// 1) 만든 페이지 import
+import HomePage from './pages/home';
+import NotFound from './pages/not-found';
+import Movies from './pages/movies';
+import RootLayout from './layout/root-layout';
+
+// 2) 라우터에 연결
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <RootLayout />,
     errorElement: <NotFound />,
     children: [
-      { index: true, element: <HomePage /> },
-      //너가 아래처럼 설정함으로써 /movies/popular , /movies/now-playing 등
-      //모두 MoviesPage 컴포넌트로 감.
-      { path: "movies/:category", element: <MoviesPage /> },
+      { index : true, element:<HomePage /> },
+      { path : 'movies', element: <Movies/>},
     ],
   },
 ]);
