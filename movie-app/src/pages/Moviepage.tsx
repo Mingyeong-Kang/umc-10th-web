@@ -1,38 +1,19 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import MovieCard from "../components/MovieCard";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import type { Movie, MovieResponse } from "../types/movie";
+import type { MovieResponse } from "../types/movie";
 import { useParams } from "react-router-dom";
+import useCustomFetch from "../hooks/useCustomFetch";
 
 export default function MoviePage() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [isPending, setIsPending] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [page, setPage] = useState(1);
+  const { category } = useParams();
 
-  const params = useParams();
+  const { data, isLoading, isError } = useCustomFetch<MovieResponse>(
+    `/movie/${category}?page=${page}`,
+  );
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      setIsPending(true);
-      setIsError(false);
-
-      try {
-        const { data } = await axios.get<MovieResponse>(
-          `https://api.themoviedb.org/3/movie/${params.category}?api_key=${import.meta.env.VITE_TMDB_KEY}&language=ko-KR&page=${page}`,
-        );
-
-        setMovies(data.results);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsPending(false);
-      }
-    };
-
-    fetchMovies();
-  }, [page, params.category]);
+  const movies = data?.results || [];
 
   return (
     <>
@@ -44,9 +25,7 @@ export default function MoviePage() {
         >
           {"<"}
         </button>
-
         <span>{page} 페이지</span>
-
         <button
           className="bg-[#dda5e3] text-white px-6 py-3 rounded-lg shadow-md hover:bg-[#b2dab1] transition-all duration-200"
           onClick={() => setPage((prev) => prev + 1)}
@@ -55,7 +34,7 @@ export default function MoviePage() {
         </button>
       </div>
 
-      {isPending && (
+      {isLoading && (
         <div className="flex items-center justify-center h-dvh">
           <LoadingSpinner />
         </div>
@@ -63,11 +42,15 @@ export default function MoviePage() {
 
       {isError && (
         <div className="flex items-center justify-center h-dvh">
-          <span className="text-red-500 text-2xl">에러가 발생했습니다.</span>
+          <span className="text-red-500 text-2xl font-bold text-center">
+            ❌ 데이터를 불러오는데 실패했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </span>
         </div>
       )}
 
-      {!isPending && !isError && (
+      {!isLoading && !isError && (
         <div className="p-10 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />

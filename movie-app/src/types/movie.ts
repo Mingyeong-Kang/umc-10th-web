@@ -13,6 +13,7 @@ export type Movie = {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  runtime?: number;
 };
 
 export type MovieResponse = {
@@ -21,3 +22,14 @@ export type MovieResponse = {
   total_pages: number;
   total_results: number;
 };
+
+export interface Cast {
+  id: number;
+  name: string;
+  profile_path: string;
+  character: string;
+}
+
+export interface CreditsResponse {
+  cast: Cast[];
+}
