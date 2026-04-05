@@ -1,43 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useForm from "../hooks/useForm";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface SignupFormValues {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-  nickname: string;
-}
+const signupSchema = z
+  .object({
+    email: z.email("올바른 이메일 형식을 입력해주세요."),
+    password: z.string().min(6, "비밀번호는 6자 이상이어야 합니다."),
+    passwordConfirm: z.string(),
+    nickname: z.string().min(1, "닉네임을 입력해주세요."),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: "비밀번호가 일치하지 않습니다.",
+    path: ["passwordConfirm"],
+  });
 
-const validate = (values: SignupFormValues) => {
-  const errors = {} as Record<keyof SignupFormValues, string>;
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = "올바른 이메일 형식을 입력해주세요.";
-  } else {
-    errors.email = "";
-  }
-
-  if (values.password.length < 6) {
-    errors.password = "비밀번호는 6자 이상이어야 합니다.";
-  } else {
-    errors.password = "";
-  }
-
-  if (values.password !== values.passwordConfirm) {
-    errors.passwordConfirm = "비밀번호가 일치하지 않습니다.";
-  } else {
-    errors.passwordConfirm = "";
-  }
-
-  if (values.nickname.trim() === "") {
-    errors.nickname = "닉네임을 입력해주세요.";
-  } else {
-    errors.nickname = "";
-  }
-
-  return errors;
-};
+type SignupFormValues = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -45,10 +24,23 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
-  const { values, errors, touched, getInputProps } = useForm<SignupFormValues>({
-    initialValues: { email: "", password: "", passwordConfirm: "", nickname: "" },
-    validate,
+  const {
+    register,
+    watch,
+    trigger,
+    formState: { errors, touchedFields },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    mode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      nickname: "",
+    },
   });
+
+  const values = watch();
 
   const isEmailValid = !errors.email && values.email !== "";
   const isPasswordValid =
@@ -58,16 +50,19 @@ const SignupPage = () => {
     values.passwordConfirm !== "";
   const isNicknameValid = !errors.nickname && values.nickname.trim() !== "";
 
-  const handleNext = () => {
-    if (step === 1 && isEmailValid) {
-      setStep(2);
-    } else if (step === 2 && isPasswordValid) {
-      setStep(3);
+  const handleNext = async () => {
+    if (step === 1) {
+      const valid = await trigger("email");
+      if (valid) setStep(2);
+    } else if (step === 2) {
+      const valid = await trigger(["password", "passwordConfirm"]);
+      if (valid) setStep(3);
     }
   };
 
-  const handleSignup = () => {
-    if (isNicknameValid) {
+  const handleSignup = async () => {
+    const valid = await trigger("nickname");
+    if (valid && isNicknameValid) {
       console.log("회원가입 완료:", {
         email: values.email,
         password: values.password,
@@ -117,17 +112,19 @@ const SignupPage = () => {
                 이메일
               </label>
               <input
-                {...getInputProps("email")}
+                {...register("email")}
                 className={`border w-full p-3 rounded-lg outline-none transition-colors ${
-                  touched.email && errors.email
+                  touchedFields.email && errors.email
                     ? "border-red-400 bg-red-50 focus:border-red-500"
                     : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white"
                 }`}
                 type="email"
                 placeholder="example@email.com"
               />
-              {touched.email && errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              {touchedFields.email && errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -158,9 +155,9 @@ const SignupPage = () => {
               </label>
               <div className="relative">
                 <input
-                  {...getInputProps("password")}
+                  {...register("password")}
                   className={`border w-full p-3 pr-12 rounded-lg outline-none transition-colors ${
-                    touched.password && errors.password
+                    touchedFields.password && errors.password
                       ? "border-red-400 bg-red-50 focus:border-red-500"
                       : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white"
                   }`}
@@ -184,8 +181,10 @@ const SignupPage = () => {
                   )}
                 </button>
               </div>
-              {touched.password && errors.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              {touchedFields.password && errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -196,9 +195,9 @@ const SignupPage = () => {
               </label>
               <div className="relative">
                 <input
-                  {...getInputProps("passwordConfirm")}
+                  {...register("passwordConfirm")}
                   className={`border w-full p-3 pr-12 rounded-lg outline-none transition-colors ${
-                    touched.passwordConfirm && errors.passwordConfirm
+                    touchedFields.passwordConfirm && errors.passwordConfirm
                       ? "border-red-400 bg-red-50 focus:border-red-500"
                       : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white"
                   }`}
@@ -222,8 +221,10 @@ const SignupPage = () => {
                   )}
                 </button>
               </div>
-              {touched.passwordConfirm && errors.passwordConfirm && (
-                <p className="text-red-500 text-xs mt-1">{errors.passwordConfirm}</p>
+              {touchedFields.passwordConfirm && errors.passwordConfirm && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.passwordConfirm.message}
+                </p>
               )}
             </div>
 
@@ -268,17 +269,19 @@ const SignupPage = () => {
                 닉네임
               </label>
               <input
-                {...getInputProps("nickname")}
+                {...register("nickname")}
                 className={`border w-full p-3 rounded-lg outline-none transition-colors ${
-                  touched.nickname && errors.nickname
+                  touchedFields.nickname && errors.nickname
                     ? "border-red-400 bg-red-50 focus:border-red-500"
                     : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white"
                 }`}
                 type="text"
                 placeholder="닉네임을 입력해주세요"
               />
-              {touched.nickname && errors.nickname && (
-                <p className="text-red-500 text-xs mt-1">{errors.nickname}</p>
+              {touchedFields.nickname && errors.nickname && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.nickname.message}
+                </p>
               )}
             </div>
 
