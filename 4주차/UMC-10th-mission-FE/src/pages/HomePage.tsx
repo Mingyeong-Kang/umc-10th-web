@@ -1,5 +1,5 @@
 export const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div className="flex justify-center">이곳은 홈 페이지~</div>
   )
 }

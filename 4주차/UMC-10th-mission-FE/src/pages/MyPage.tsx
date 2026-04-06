@@ -16,7 +16,7 @@ export const MyPage = () => {
   }, []);
   return (
     <div>
-        {data.data.name} {data.data.email}
+        당신은 {data.data.name}! 당신의 이메일은 {data.data.email}
     </div>
   )
 };
