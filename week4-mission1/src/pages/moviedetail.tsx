@@ -1,43 +1,28 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import type { MovieDetail, Credits } from "../types/movie-detail";
+import useCustomFetch from "../hooks/useCustomFetch";
 
 const MovieDetailPage = () => {
   const { movieId } = useParams();
 
-  const [movie, setMovie] = useState<MovieDetail | null>(null);
-  const [credits, setCredits] = useState<Credits | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const movieUrl = `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR&api_key=919672ed7e6f18195fe693458000a460`;
 
-  useEffect(() => {
-    if (!movieId) return;
+  const creditUrl = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=919672ed7e6f18195fe693458000a460`;
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
+  const {
+    data: movie,
+    isLoading: movieLoading,
+    error: movieError,
+  } = useCustomFetch<MovieDetail>(movieUrl, [movieId]);
 
-      try {
-        const movieRes = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR&api_key=919672ed7e6f18195fe693458000a460`
-        );
+  const {
+    data: credits,
+    isLoading: creditLoading,
+    error: creditError,
+  } = useCustomFetch<Credits>(creditUrl, [movieId]);
 
-        const creditRes = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=919672ed7e6f18195fe693458000a460`
-        );
-
-        setMovie(movieRes.data);
-        setCredits(creditRes.data);
-      } catch (err) {
-        setError("데이터를 불러오는 중 오류가 발생했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [movieId]);
+  const isLoading = movieLoading || creditLoading;
+  const error = movieError || creditError;
 
   if (isLoading) {
   return (

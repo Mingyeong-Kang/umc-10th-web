@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import type { Movie, MovieResponse } from "../types/movie";
-import axios from "axios";
+import {useState} from "react";
+import type {MovieResponse } from "../types/movie";
+import useCustomFetch from "../hooks/useCustomFetch";
 
 const categoryMap: Record<string, string> = {
   popular: "popular",
@@ -10,52 +10,21 @@ const categoryMap: Record<string, string> = {
   "top-rated": "top_rated",
 };
 
+
+
 const MoviesPage = () => {
   const { category } = useParams();
   const navigate = useNavigate();
 
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const apiCategory = category ? categoryMap[category] : "popular";
+  const apiCategory = categoryMap[category ?? "popular"] ?? "popular";
 
-  useEffect(() => {
-    setPage(1);
-  }, [category]);
+  const url =  `https://api.themoviedb.org/3/movie/${apiCategory}?language=ko-KR&region=KR&page=${page}&api_key=919672ed7e6f18195fe693458000a460`;
 
-  useEffect(() => {
-    if (!category) return;
+  const {data, isLoading, error} = useCustomFetch<MovieResponse>(url, [category, page]);
 
-    const source = axios.CancelToken.source();
-
-    const fetchMovies = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const { data } = await axios.get<MovieResponse>(
-          `https://api.themoviedb.org/3/movie/${apiCategory}?language=ko-KR&region=KR&page=${page}&api_key=919672ed7e6f18195fe693458000a460`,
-          { cancelToken: source.token }
-        );
-
-        setMovies(data.results);
-      } catch (err) {
-        if (!axios.isCancel(err)) {
-          setError("영화 데이터를 불러오는 중 오류가 발생했습니다.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMovies();
-
-    return () => {
-      source.cancel();
-    };
-  }, [category, page]);
+  const movies = data?.results ?? [];
 
   return (
     <div className="p-4 bg-black min-h-screen text-white">
