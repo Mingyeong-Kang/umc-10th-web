@@ -1,50 +1,73 @@
-# 🏆 UMC 10th Web Study
+# React + TypeScript + Vite
 
-> 💡 **포기하지 않고 끝까지 완주하는 웹 스터디**
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
----
+Currently, two official plugins are available:
 
-## 📢 스터디 정보
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-* **📅 시간**: 매주 수요일 14:00 ~ 15:00
-* **📍 장소**: 신공학관 B1 취·창업홍보실7
-* **👑 스터디장**: 여니 / 이홍연
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## 👥 스터디원
+## Expanding the ESLint configuration
 
-| 닉네임 | 이름  | 워크북                                                                  |
-| --- | --- | -------------------------------------------------------------------- |
-| 챈   | 임채은 | [워크북](https://www.notion.so/320b57f4596b8158b1f1cb430f0c6d9a?pvs=21) |
-| 여니  | 이홍연 | [워크북](https://www.notion.so/320b57f4596b8133a15ed75b1c99dcd9?pvs=21) |
-| 애옹  | 유아영 | [워크북](https://www.notion.so/323b57f4596b802f8bf7d8d139378d00?pvs=21) |
-| 젼졔  | 전지혜 | [워크북](https://www.notion.so/323b57f4596b8030b674cbf35c456be1?pvs=21) |
-| 사라  | 이수빈 | [워크북](https://www.notion.so/323b57f4596b807ca604ceae9cd66701?pvs=21) |
-| 레아  | 강민경 | [워크북](https://www.notion.so/323b57f4596b80248c9dc5ef8d164415?pvs=21) |
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
----
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-## ☑️ 출석 & 인증
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-* 📋 [출석 현황](https://www.notion.so/320b57f4596b811db021f6c8433171ea?pvs=21)
-* 📸 [인증 사진](https://www.notion.so/320b57f4596b81c9be0fc7e7dd64944a?pvs=21)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
----
-
-## 🚀 스터디 목표
-
-* 웹 개발 기초부터 React 기반 실전까지 완주
-* 각자 워크북 기반 학습 + 공유
-* 협업 및 코드 리뷰 경험 축적
-
----
-
-## ✨ 운영 방식
-
-* 매주 워크북 학습 및 공유
-* 위클리 스크럼 진행
-* 베스트 워크북 선정 (파트장)
-* 출석 및 인증 관리
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
