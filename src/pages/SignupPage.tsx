@@ -58,7 +58,7 @@ const SignupPage = () => {
       });
 
       alert("회원가입 성공!");
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error: any) {
       alert(error?.message || "회원가입 실패");
     }
