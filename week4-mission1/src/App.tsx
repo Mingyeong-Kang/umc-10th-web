@@ -5,6 +5,7 @@ import MoviesPage from "./pages/movies";
 import MovieDetailPage from "./pages/moviedetail"; 
 import NotFound from "./pages/not-found";
 import LoginPage from "./pages/login";
+import SignupPage from "./pages/signup";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "movies/:category", element: <MoviesPage /> },
       { path: "movie/:movieId", element: <MovieDetailPage /> },
       { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignupPage /> },
     ],
   },
 ]);
