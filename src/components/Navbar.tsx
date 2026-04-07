@@ -12,6 +12,8 @@ export default function Navbar() {
       <NavLink to="/" className="hover:text-blue-500">
         평점 높은
       </NavLink>
+      <NavLink to="/login">로그인</NavLink>
+      <NavLink to="/signup">회원가입</NavLink> 
     </div>
   );
 }

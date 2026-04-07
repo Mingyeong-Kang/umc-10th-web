@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
 import MovieDetail from "./pages/MovieDetail";
+import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
+
 
 function App() {
   return (
@@ -10,6 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movie/:movieId" element={<MovieDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />   
       </Routes>
     </BrowserRouter>
   );
