@@ -1,126 +1,173 @@
-import { z } from "zod";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { postSignup } from "../apis/auth";
 
-const schema = z
-  .object({
-    email: z.string().email({ message: "올바른 이메일 형식이 아닙니다." }),
-
-    password: z
-      .string()
-      .min(8, { message: "비밀번호는 8자 이상이어야 합니다." })
-      .max(20, { message: "비밀번호는 20자 이하여야 합니다." }),
-
-    passwordCheck: z
-      .string()
-      .min(8, { message: "비밀번호는 8자 이상이어야 합니다." })
-      .max(20, { message: "비밀번호는 20자 이하여야 합니다." }),
-
-    name: z.string().min(1, { message: "이름을 입력해주세요." }),
-  })
-  .refine((data) => data.password === data.passwordCheck, {
-    message: "비밀번호가 일치하지 않습니다.",
-    path: ["passwordCheck"],
-  });
-
-type FormFields = z.infer<typeof schema>;
+// 이메일 검증 함수
+const validateEmail = (email: string) => {
+  return /\S+@\S+\.\S+/.test(email);
+};
 
 const SignupPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormFields>({
-    defaultValues: {
-      email: "",
-      password: "",
-      passwordCheck: "",
-      name: "",
-    },
-    resolver: zodResolver(schema),
-    mode: "onBlur",
-  });
+  const [step, setStep] = useState(1);
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    // passwordCheck 제거하고 보내기
-    const { passwordCheck, ...rest } = data;
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-    console.log(rest);
-    // TODO: 여기에 apis/auth.ts에서 만든 postSignup API 호출 로직이 곧 추가될 것입니다!
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
+
+  const [name, setName] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  // 👉 STEP 1: 이메일
+  const handleEmailNext = () => {
+    if (!validateEmail(email)) {
+      setEmailError("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+    setEmailError("");
+    setStep(2);
   };
 
-  /**
-   * ✅ UI
-   */
+  // 👉 STEP 2: 비밀번호
+  const handlePasswordNext = () => {
+    if (password.length < 6) {
+      setPasswordError("비밀번호는 6자 이상이어야 합니다.");
+      return;
+    }
+    setPasswordError("");
+
+    if (password !== passwordConfirm) {
+      setConfirmError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    setConfirmError("");
+
+    setStep(3);
+  };
+
+  // 👉 STEP 3: 회원가입
+  const handleSignup = async () => {
+    try {
+      await postSignup({
+        email,
+        password,
+        name,
+      });
+
+      alert("회원가입 성공!");
+      window.location.href = "/login";
+    } catch (error: any) {
+      alert(error?.message || "회원가입 실패");
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-4">
-      <div className="flex flex-col gap-3">
-        {/* 이메일 */}
-        <input
-          {...register("email")}
-          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
-            errors?.email ? "border-red-500 bg-red-200" : "border-gray-300"
-          }`}
-          type="email"
-          placeholder="이메일"
-        />
-        {errors.email && (
-          <div className="text-red-500 text-sm">{errors.email.message}</div>
-        )}
+    <div className="flex flex-col items-center justify-center h-screen gap-4">
+      {/* STEP 1 */}
+      {step === 1 && (
+        <>
+          <h1 className="text-xl font-bold">이메일 입력</h1>
 
-        {/* 비밀번호 */}
-        <input
-          {...register("password")}
-          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
-            errors?.password ? "border-red-500 bg-red-200" : "border-gray-300"
-          }`}
-          type="password"
-          placeholder="비밀번호"
-        />
-        {errors.password && (
-          <div className="text-red-500 text-sm">{errors.password.message}</div>
-        )}
+          <input
+            className="border p-2 w-[300px]"
+            type="text"
+            placeholder="이메일"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        {/* 비밀번호 확인 */}
-        <input
-          {...register("passwordCheck")}
-          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
-            errors?.passwordCheck
-              ? "border-red-500 bg-red-200"
-              : "border-gray-300"
-          }`}
-          type="password"
-          placeholder="비밀번호 확인"
-        />
-        {errors.passwordCheck && (
-          <div className="text-red-500 text-sm">
-            {errors.passwordCheck.message}
+          {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
+
+          <button
+            onClick={handleEmailNext}
+            disabled={!email}
+            className="bg-blue-500 text-white px-4 py-2 disabled:bg-gray-300"
+          >
+            다음
+          </button>
+        </>
+      )}
+
+      {/* STEP 2 */}
+      {step === 2 && (
+        <>
+          <h1 className="text-xl font-bold">비밀번호 설정</h1>
+
+          <p className="text-sm text-gray-500">{email}</p>
+
+          <div className="relative">
+            <input
+              className="border p-2 w-[300px]"
+              type={showPassword ? "text" : "password"}
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              className="absolute right-2 top-2"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              👁
+            </button>
           </div>
-        )}
 
-        {/* 이름 */}
-        <input
-          {...register("name")}
-          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
-            errors?.name ? "border-red-500 bg-red-200" : "border-gray-300"
-          }`}
-          type="text"
-          placeholder="이름"
-        />
-        {errors.name && (
-          <div className="text-red-500 text-sm">{errors.name.message}</div>
-        )}
+          {passwordError && (
+            <p className="text-red-500 text-sm">{passwordError}</p>
+          )}
 
-        {/* 버튼 */}
-        <button
-          type="button"
-          onClick={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-gray-300"
-        >
-          회원가입
-        </button>
-      </div>
+          <input
+            className="border p-2 w-[300px]"
+            type="password"
+            placeholder="비밀번호 확인"
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
+          />
+
+          {confirmError && (
+            <p className="text-red-500 text-sm">{confirmError}</p>
+          )}
+
+          <button
+            onClick={handlePasswordNext}
+            disabled={!password || !passwordConfirm}
+            className="bg-blue-500 text-white px-4 py-2 disabled:bg-gray-300"
+          >
+            다음
+          </button>
+        </>
+      )}
+
+      {/* STEP 3 */}
+      {step === 3 && (
+        <>
+          <h1 className="text-xl font-bold">닉네임 설정</h1>
+
+          {/* 프로필 UI (dummy) */}
+          <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
+            +
+          </div>
+
+          <input
+            className="border p-2 w-[300px]"
+            type="text"
+            placeholder="닉네임"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <button
+            onClick={handleSignup}
+            disabled={!name}
+            className="bg-green-500 text-white px-4 py-2 disabled:bg-gray-300"
+          >
+            회원가입 완료
+          </button>
+        </>
+      )}
     </div>
   );
 };

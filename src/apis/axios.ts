@@ -1,8 +1,16 @@
-// ✅ 추가된 부분: axios 라이브러리와 AxiosInstance 타입을 가져옵니다!
-import axios, { type AxiosInstance } from "axios";
+import axios from "axios";
 
-const axiosInstance: AxiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
 });
 
-export default axiosInstance;
+// 요청마다 토큰 자동 붙이기
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+  }
+
+  return config;
+});
