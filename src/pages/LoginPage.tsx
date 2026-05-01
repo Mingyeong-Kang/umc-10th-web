@@ -1,12 +1,11 @@
 import useForm from "../hooks/useForm.ts";
 import { validateSignin } from "../utils/validate.ts";
 import type { UserSigninInformation } from "../utils/validate.ts";
-import { postSignin } from "../apis/auth.ts";
-import { useLocalStorage } from "../hooks/useLocalStorage.ts";
-import { LOCAL_STORAGE_KEY } from "../constants/Key.ts";
+
+import { useAuth } from "../context/AuthContext.tsx";
 
 const LoginPage = () => {
-  const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+  const { login } = useAuth();
 
   const { values, errors, touched, getInputProps } =
     useForm<UserSigninInformation>({
@@ -18,16 +17,10 @@ const LoginPage = () => {
     });
 
   const handleSubmit = async () => {
-    console.log(values);
-
-    try {
-      const response = await postSignin(values);
-      setItem(response.data.accessToken);
-    } catch (error: any) {
-      alert(error?.message);
-    }
+    await login(values);
   };
 
+  // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
   const isDisabled: boolean =
     Object.values(errors || {}).some((error: string) => error.length > 0) ||
     Object.values(values).some((value: string) => value === "");
@@ -37,8 +30,8 @@ const LoginPage = () => {
       <div className="flex flex-col gap-3">
         <input
           {...getInputProps("email")}
-          className={`border w-[300px] p-[10px] rounded-sm focus:border-[#807bff]
-          ${
+          name="email"
+          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
             errors?.email && touched?.email
               ? "border-red-500 bg-red-200"
               : "border-[#ccc]"
@@ -53,8 +46,8 @@ const LoginPage = () => {
 
         <input
           {...getInputProps("password")}
-          className={`border w-[300px] p-[10px] rounded-sm focus:border-[#807bff]
-          ${
+          name="password"
+          className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff] rounded-sm ${
             errors?.password && touched?.password
               ? "border-red-500 bg-red-200"
               : "border-[#ccc]"

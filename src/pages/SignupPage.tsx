@@ -21,7 +21,6 @@ const SignupPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  // 👉 STEP 1: 이메일
   const handleEmailNext = () => {
     if (!validateEmail(email)) {
       setEmailError("올바른 이메일 형식을 입력해주세요.");
@@ -31,7 +30,6 @@ const SignupPage = () => {
     setStep(2);
   };
 
-  // 👉 STEP 2: 비밀번호
   const handlePasswordNext = () => {
     if (password.length < 6) {
       setPasswordError("비밀번호는 6자 이상이어야 합니다.");
@@ -48,7 +46,6 @@ const SignupPage = () => {
     setStep(3);
   };
 
-  // 👉 STEP 3: 회원가입
   const handleSignup = async () => {
     try {
       await postSignup({
@@ -173,4 +170,3 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-//최종제출........
