@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
 import MyPage from "./pages/MyPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
+import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage.tsx";
 
 import { AuthProvider } from "./context/AuthContext.tsx";
 
@@ -26,6 +27,10 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
+      {
+        path: "v1/auth/google/callback",
+        element: <GoogleLoginRedirectPage />,
+      },
     ],
   },
 ];
