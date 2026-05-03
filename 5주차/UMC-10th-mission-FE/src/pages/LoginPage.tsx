@@ -28,6 +28,9 @@ export const LoginPage = () => {
     await login(values);
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login";  }
+
   // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼이 비활성화
   const isDisabled = 
   Object.values(errors || {}).some((error) => error.length > 0) || //오류가 있으면 true
@@ -61,8 +64,19 @@ export const LoginPage = () => {
           className="w-full bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-gray-300"
           type='button'
           onClick={handleSubmit}
-          disabled={isDisabled}>
+          disabled={isDisabled}
+        >
           로그인
+        </button>
+        <button 
+          className="w-full bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-gray-300"
+          type='button'
+          onClick={handleGoogleLogin}
+        >
+          <div className = "flex items-center justify-center gap-4">
+            <img src={'/images/google-color.svg'} alt = "Google Logo Image"></img>
+            <span>구글 로그인</span>
+          </div>
         </button>
       </div>
     </div>
