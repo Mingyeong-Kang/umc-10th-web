@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>align</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .container {
+      width: 1000px;
+      height: 610px;
+      padding: 10px;
+      background-color: greenyellow;
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      background-color: lightgoldenrodyellow;
+    }
+
+    .alignText{
+      text-align: center;
+    }
+
+    .alignText .box{
+      display: inline-block; /*box 요소가 block요소이니 text-align을 적용시키기 위해 inline-block으로 바꿔줌*/
+    }
+
+    .alignMargin{
+      margin: 0 auto 20px auto; /*상 우 하 좌*/
+    }
+
+    .alignFlex{
+      display: flex;
+      justify-content: center;
+    }
+
+    .alignTranslate{
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .alignGrid{
+      display: grid;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="alignText">
+      <div class="box">text-align</div>
+    </div>
+
+    <div class="box alignMargin">margin</div>
+
+    <div class="alignFlex">
+      <div class="box">flex</div>
+    </div>
+
+    <div class="box alignTranslate">translate</div>
+
+    <div class="alignGrid">
+      <div class="box">grid</div>
+    </div>
+  </div>
+</body>
+
+</html>
