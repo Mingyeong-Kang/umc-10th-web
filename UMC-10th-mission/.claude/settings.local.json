@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx vite:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm install:*)",
+      "Bash(yarn add:*)",
+      "Bash(npx --yes npm install zod react-hook-form @hookform/resolvers)",
+      "Bash(npm -v)",
+      "Bash(npm cache:*)",
+      "Bash(npx --yes pnpm --version)",
+      "Bash(pnpm add:*)"
+    ]
+  }
+}

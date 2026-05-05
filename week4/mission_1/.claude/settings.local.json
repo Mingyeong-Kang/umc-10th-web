@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(mkdir -p C:/EWHA/umc/week5)",
+      "Bash(cp -r C:/EWHA/umc/week4/mission_1 C:/EWHA/umc/week5/mission_1)",
+      "Bash(pnpm install:*)"
+    ]
+  }
+}
