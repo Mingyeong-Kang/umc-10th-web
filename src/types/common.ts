@@ -1,4 +1,4 @@
-import { PAGINATION_ORDER } from "../enums/common.ts";
+import type { PAGINATION_ORDER } from "../enums/common.ts";
 
 export type CommonResponse<T> = {
   status: boolean;
@@ -11,9 +11,11 @@ export type CursorBasedResponse<T> = {
   status: boolean;
   statusCode: number;
   message: string;
-  data: T;
-  nextCursor: number;
-  hasNext: boolean;
+  data: {
+    data: T;
+    nextCursor: number;
+    hasNext: boolean;
+  };
 };
 
 export type PaginationDto = {
