@@ -3,33 +3,6 @@
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext";
 
-// const LINKS = [
-//     { to: '/', label: '홈'},
-//     { to: '/signup', label: '회원 가입'},
-//     { to: '/login', label: '로그인'},
-//     { to: '/my', label: '마이페이지'},
-// ]
-
-// export const Navbar = () => {
-//     return (
-//         <div className="flex gap-3 p-4">
-//             {LINKS.map(({to, label}) => (
-//                 <NavLink
-//                     key={to}
-//                     to={to}
-//                     className={({isActive}) => {
-//                         return isActive ? 'text-blue-600 font-bold' : 'text-gray-500';
-//                     }}
-//                 >
-//                     {label}
-//                 </NavLink>
-//             ))
-//             }
-//         </div>
-//     )
-    
-// }
-
 export const Navbar = () => {
     const {accessToken} = useAuth();
     return (
@@ -39,7 +12,7 @@ export const Navbar = () => {
             to = "/"
             className="text-xl font-bold text-gray-900 dark:text-white"
             >
-                SpinningSpinning Dolimpan            
+                돌려돌려 LP판            
             </Link>
             <div className="space-x-6">
                 {!accessToken && (
