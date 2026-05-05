@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import HomeLayout from "./layouts/HomeLayout.tsx";
 import ProtectedLayout from "./layouts/ProtectedLayout.tsx";
 
@@ -10,6 +11,7 @@ import SignupPage from "./pages/SignupPage.tsx";
 import MyPage from "./pages/MyPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage.tsx";
+import SearchPage from "./pages/SearchPage.tsx";
 
 import { AuthProvider } from "./context/AuthContext.tsx";
 
@@ -27,6 +29,7 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
+      { path: "search", element: <SearchPage /> },
       {
         path: "v1/auth/google/callback",
         element: <GoogleLoginRedirectPage />,
@@ -51,12 +54,22 @@ const protectedRoutes: RouteObject[] = [
 ];
 
 const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
-
+export const queryClient: QueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+    },
+  },
+});
 function App() {
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
   );
 }
 
