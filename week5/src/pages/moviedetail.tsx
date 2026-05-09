@@ -31,7 +31,7 @@ const MovieDetailPage = () => {
     </div>
   );
 }
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (error) return <p className="text-red-500 text-center">{error.message}</p>;
   if (!movie) return null;
 
   const director = credits?.crew.find(

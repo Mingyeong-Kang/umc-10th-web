@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const useCustomFetch = <T,>(url: string, deps: any[] = []) => {
-  const [data, setData] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const useCustomFetch = <T,>(
+  url: string,
+  queryKey: unknown[]
+) => {
+  return useQuery({
+    queryKey,
 
-  useEffect(() => {
-    if (!url) return;
+    queryFn: async ({ signal }) => {
+      const res = await axios.get<T>(url, {
+        signal,
+      });
 
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
+      return res.data;
+    },
 
-      try {
-        const res = await axios.get<T>(url);
-        setData(res.data);
-      } catch (err) {
-        setError("😢데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    retry: 3,
 
-    fetchData();
-  }, deps);
+    retryDelay: (attemptIndex) =>
+      Math.min(1000 * Math.pow(2, attemptIndex), 30000),
 
-  return { data, isLoading, error };
+    staleTime: 5 * 60 * 1000,
+
+    gcTime: 10 * 60 * 1000,
+
+    enabled: !!url,
+  });
 };
 
 export default useCustomFetch;

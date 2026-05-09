@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ type LoginForm = z.infer<typeof schema>;
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = useContext(AuthContext);
 
   const {
@@ -34,7 +35,8 @@ const LoginPage = () => {
     try {
       await auth?.login(data);
       alert("로그인 성공!");
-      navigate("/");
+      const from = (location.state as any)?.from?.pathname ?? "/";
+      navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
       alert("로그인 실패");
@@ -78,9 +80,7 @@ const LoginPage = () => {
             type="email"
             placeholder="이메일을 입력해주세요!"
             className={`w-full p-3 mb-1 rounded-md border bg-transparent placeholder-gray-500 text-white ${
-              errors.email
-                ? "border-pink-500 bg-pink-950"
-                : "border-gray-600"
+              errors.email ? "border-pink-500 bg-pink-950" : "border-gray-600"
             }`}
           />
           {errors.email && (
@@ -92,9 +92,7 @@ const LoginPage = () => {
             type="password"
             placeholder="비밀번호를 입력해주세요!"
             className={`w-full p-3 mb-1 rounded-md border bg-transparent placeholder-gray-500 text-white ${
-              errors.password
-                ? "border-pink-500 bg-pink-950"
-                : "border-gray-600"
+              errors.password ? "border-pink-500 bg-pink-950" : "border-gray-600"
             }`}
           />
           {errors.password && (

@@ -11,7 +11,6 @@ const categoryMap: Record<string, string> = {
 };
 
 
-
 const MoviesPage = () => {
   const { category } = useParams();
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ const MoviesPage = () => {
 
   const url =  `https://api.themoviedb.org/3/movie/${apiCategory}?language=ko-KR&region=KR&page=${page}&api_key=919672ed7e6f18195fe693458000a460`;
 
-  const {data, isLoading, error} = useCustomFetch<MovieResponse>(url, [category, page]);
+  const {data, isLoading, error} =  useCustomFetch<MovieResponse>(url, ["movies", category, page]);
 
   const movies = data?.results ?? [];
 
@@ -38,7 +37,7 @@ const MoviesPage = () => {
       )}
 
       {/* 에러 */}
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500">{error.message}</p>}
 
       {/* 영화 목록 */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

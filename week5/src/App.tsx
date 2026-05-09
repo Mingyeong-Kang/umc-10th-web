@@ -10,6 +10,9 @@ import AuthProvider from "./context/AuthContext";
 import MyPage from "./pages/MyPage";
 import ProtectedLayout from "./layout/ProtectedLayout";
 import GoogleCallback from "./pages/GoogleCallback";
+import InfinitePage from "./pages/infinite";
+import LPListPage from "./pages/lps";
+import LPDetailPage from "./pages/lpDetail";
 
 const router = createBrowserRouter([
   {
@@ -18,17 +21,21 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "home", element: <HomePage /> },
       { path: "movies/:category", element: <MoviesPage /> },
       { path: "movie/:movieId", element: <MovieDetailPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "v1/auth/google/callback", element: <GoogleCallback /> },
+      { path: "infinite", element: <InfinitePage /> },
 
-      // 🔒 로그인이 필요한 페이지
+      { path: "lps", element: <LPListPage /> },
+
       {
         element: <ProtectedLayout />,
         children: [
           { path: "my", element: <MyPage /> },
+          { path: "lp/:lpid", element: <LPDetailPage /> },
         ],
       },
     ],
