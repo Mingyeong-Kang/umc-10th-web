@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(npx tsc:*)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \"LISTEN\")",
+      "Bash(findstr -E \":5173|:5174|:5175|:5176|:8000|:3000\")",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(curl -s \"http://localhost:8000/v1/lps?order=desc&limit=2\")"
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+ *{
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  
+  }
+    body{
+    background-color: #f7fff1;
+    margin: 0;
+    padding: 50px 0;
+  }
+ 
+  .todo-container{
+    text-align: center;
+    margin: 0 auto;
+    max-width: 880px;
+    background-color: #ffffff;
+    padding: 40px;
+   border-radius: 20px;
+   box-shadow: 0 10px 30px rgba(30, 84, 26, 0.1);
+  }
+
+  .todo-container__header h1{
+    color: #1e541a;
+    margin-bottom: 20px;
+    font-size:40px;
+  }
+
+  hr{
+    border: 0;
+    height: 1px;
+    background: #ebffca;
+    margin-bottom: 30px;
+  }
+  .todo-container__input input{
+    padding: 8px 70px;
+    width: 60%;
+    border: 2px solid #ebffca;
+    border-radius: 8px;
+  }
+  .todo-container__input button{
+    padding: 8px 10px;
+    background-color: #1e541a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+
+  main{
+  display: flex;
+   justify-content: space-between;
+   gap: 30px;
+  }
+
+  section{
+    flex:1;
+    background-color:#f2ffe3 ;
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(33, 65, 31, 0.1);
+  }
+  h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddf9ae;
+    padding-bottom: 10px;
+  }
+
+  li{
+    list-style: none;
+    margin-bottom: 10px;
+    font-size: 15px;
+    background-color: white;
+    border: 1px solid #eeffd2;
+    padding: 30px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center ;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+ 
+  }
+
+  li button{
+    padding: 4px 8px;
+    background-color: #1e541a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: 0.8rem;
+  }
+
+ li button:hover {
+    background-color: #ebffca;
+    color: rgb(95, 112, 75);
+  }
