@@ -1,46 +1,44 @@
-import { useParams } from "react-router-dom";
 import { Heart } from "lucide-react";
-
+import { useParams } from "react-router-dom";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail.ts";
 import useGetMyInfo from "../hooks/queries/useGetMyInfo.ts";
 import usePostLike from "../hooks/mutations/usePostLike.ts";
 import useDeleteLike from "../hooks/mutations/useDeleteLike.ts";
 import { useAuth } from "../context/AuthContext.tsx";
+import type { Likes } from "../types/lp.ts";
 
 const LpDetailPage = () => {
-  const { lpId } = useParams<{ lpId: string }>();
+  const { lpId } = useParams();
   const { accessToken } = useAuth();
-
-  const numericLpId = Number(lpId);
 
   const {
     data: lp,
     isPending,
     isError,
   } = useGetLpDetail({
-    lpId: numericLpId,
+    lpId: Number(lpId),
   });
 
   const { data: me } = useGetMyInfo(accessToken);
 
-  // mutate -> 비동기 요청을 실행하고, 콜백 함수를 이용해서 후속 작업 처리함
-  // mutateAsync -> Promise를 반환해서 await 사용 가능
+  // mutate -> 비동기 요청을 실행하고, 클릭 함수를 이용해서 후속 작업 처리함.
+  // mutateAsync -> Promise를 반환해서 await 사용 가능.
   const { mutate: likeMutate } = usePostLike();
   const { mutate: disLikeMutate } = useDeleteLike();
 
   const isLiked: boolean | undefined = lp?.data.likes.some(
-    (like) => like.userId === me?.data.id,
+    (like: Likes) => like.userId === me?.data.id,
   );
 
   const handleLikeLp = () => {
     likeMutate({
-      lpId: numericLpId,
+      lpId: Number(lpId),
     });
   };
 
   const handleDislikeLp = () => {
     disLikeMutate({
-      lpId: numericLpId,
+      lpId: Number(lpId),
     });
   };
 
@@ -60,12 +58,16 @@ const LpDetailPage = () => {
       <img
         src={lp.data.thumbnail}
         alt={lp.data.title}
-        className="w-80 h-80 object-cover"
+        className="mt-4 w-80 rounded-lg"
       />
 
-      <p>{lp.data.content}</p>
+      <p className="mt-4">{lp.data.content}</p>
 
-      <button onClick={isLiked ? handleDislikeLp : handleLikeLp}>
+      <button
+        type="button"
+        onClick={isLiked ? handleDislikeLp : handleLikeLp}
+        className="mt-4"
+      >
         <Heart
           color={isLiked ? "red" : "black"}
           fill={isLiked ? "red" : "transparent"}
