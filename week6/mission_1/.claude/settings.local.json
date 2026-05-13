@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(mkdir -p C:/EWHA/umc/week5)",
+      "Bash(cp -r C:/EWHA/umc/week4/mission_1 C:/EWHA/umc/week5/mission_1)",
+      "PowerShell(Copy-Item *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8000)",
+      "Bash(dir C:EWHA *)",
+      "Bash(Select-String \"env\")",
+      "PowerShell(netstat *)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:8000/v1/auth/signin\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"test@test.com\",\"password\":\"wrong\"}' -ErrorAction SilentlyContinue | Select-Object StatusCode, Content; if \\(-not $?\\) { Write-Output \"---ERROR---\"; try { Invoke-WebRequest -Uri \"http://localhost:8000/v1/auth/signin\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"test@test.com\",\"password\":\"wrong\"}' } catch { Write-Output $_.Exception.Message; Write-Output $_.ErrorDetails.Message } })",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Out-Null *)",
+      "PowerShell(npx tsc -b --pretty false 2>&1 | Select-Object -First 80)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(curl -s -o NUL -w \"%{http_code}\" http://localhost:8000/v1/lps)",
+      "Bash(curl -v http://localhost:8000/v1/lps)",
+      "Bash(curl *)",
+      "Bash(findstr /i \"env\")"
+    ]
+  }
+}
