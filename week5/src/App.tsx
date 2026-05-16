@@ -6,7 +6,6 @@ import MovieDetailPage from "./pages/moviedetail";
 import NotFound from "./pages/not-found";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
-import AuthProvider from "./context/AuthContext";
 import MyPage from "./pages/MyPage";
 import ProtectedLayout from "./layout/ProtectedLayout";
 import GoogleCallback from "./pages/GoogleCallback";
@@ -43,11 +42,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

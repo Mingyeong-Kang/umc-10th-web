@@ -3,8 +3,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FcGoogle } from "react-icons/fc";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import useLoginMutation from "../hooks/useLoginMutation";
 
 const schema = z.object({
   email: z.string().email("유효하지 않은 이메일 형식입니다."),
@@ -16,7 +15,8 @@ type LoginForm = z.infer<typeof schema>;
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const auth = useContext(AuthContext);
+
+  const { mutateAsync: loginMutate } = useLoginMutation();
 
   const {
     register,
@@ -33,8 +33,10 @@ const LoginPage = () => {
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
-      await auth?.login(data);
+      await loginMutate(data);
+
       alert("로그인 성공!");
+
       const from = (location.state as any)?.from?.pathname ?? "/";
       navigate(from, { replace: true });
     } catch (error) {
@@ -50,16 +52,17 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-xs">
-
         <div className="flex items-center mb-6">
-          <button onClick={() => navigate(-1)} className="text-white text-xl mr-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-white text-xl mr-4"
+          >
             &lt;
           </button>
           <h1 className="text-white text-lg font-semibold">로그인</h1>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -80,11 +83,15 @@ const LoginPage = () => {
             type="email"
             placeholder="이메일을 입력해주세요!"
             className={`w-full p-3 mb-1 rounded-md border bg-transparent placeholder-gray-500 text-white ${
-              errors.email ? "border-pink-500 bg-pink-950" : "border-gray-600"
+              errors.email
+                ? "border-pink-500 bg-pink-950"
+                : "border-gray-600"
             }`}
           />
           {errors.email && (
-            <p className="text-pink-500 text-sm mb-2">{errors.email.message}</p>
+            <p className="text-pink-500 text-sm mb-2">
+              {errors.email.message}
+            </p>
           )}
 
           <input
@@ -92,11 +99,15 @@ const LoginPage = () => {
             type="password"
             placeholder="비밀번호를 입력해주세요!"
             className={`w-full p-3 mb-1 rounded-md border bg-transparent placeholder-gray-500 text-white ${
-              errors.password ? "border-pink-500 bg-pink-950" : "border-gray-600"
+              errors.password
+                ? "border-pink-500 bg-pink-950"
+                : "border-gray-600"
             }`}
           />
           {errors.password && (
-            <p className="text-pink-500 text-sm mb-3">{errors.password.message}</p>
+            <p className="text-pink-500 text-sm mb-3">
+              {errors.password.message}
+            </p>
           )}
 
           <button
@@ -110,7 +121,6 @@ const LoginPage = () => {
           >
             로그인
           </button>
-
         </form>
       </div>
     </div>

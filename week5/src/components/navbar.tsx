@@ -16,18 +16,21 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     { to: "/movies/now-playing", label: "현재 상영 중" },
     { to: "/movies/upcoming", label: "개봉 예정" },
     { to: "/movies/top-rated", label: "평점 높은" },
+    { to: "/lps", label: "LP 목록" },
   ];
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    logout();            // 🔥 Context 상태 초기화 (핵심)
+    navigate("/login");
   };
 
   return (
     <header className="bg-gray-900 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
-      {/* 왼쪽: 버거 버튼 + 로고 + 영화 링크 */}
+      
+      {/* 왼쪽 */}
       <div className="flex items-center gap-4">
-        {/* 버거 버튼 */}
+        
+        {/* 햄버거 버튼 */}
         <button
           onClick={onMenuClick}
           className="text-white hover:text-pink-400 transition"
@@ -51,11 +54,14 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         </button>
 
         {/* 로고 */}
-        <NavLink to="/" className="text-pink-500 font-bold text-xl shrink-0">
+        <NavLink
+          to="/"
+          className="text-pink-500 font-bold text-xl shrink-0"
+        >
           🎵 돌려돌려LP판
         </NavLink>
 
-        {/* 영화 링크 — 데스크탑에서만 표시 */}
+        {/* 메뉴 */}
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map(({ to, label }) => (
             <NavLink
@@ -75,13 +81,24 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
         </nav>
       </div>
 
-      {/* 오른쪽: 로그인 상태 */}
+      {/* 오른쪽 */}
       <div className="flex items-center gap-3">
+
+        {/* 마이페이지 */}
+        <button
+          onClick={() => navigate("/my")}
+          className="px-3 py-1.5 border border-gray-500 rounded-lg text-white text-sm hover:bg-gray-700 transition"
+        >
+          마이페이지
+        </button>
+
+        {/* 로그인 상태 */}
         {name ? (
           <>
             <span className="text-white text-sm hidden sm:block">
               {name}님 반갑습니다.
             </span>
+
             <button
               onClick={handleLogout}
               className="px-4 py-1.5 border border-gray-500 rounded-lg text-white text-sm hover:bg-gray-700 transition"
@@ -97,6 +114,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             >
               로그인
             </button>
+
             <button
               onClick={() => navigate("/signup")}
               className="px-4 py-1.5 bg-pink-500 rounded-lg text-white text-sm hover:bg-pink-600 transition"

@@ -22,3 +22,15 @@ export type PaginationDto = {
   search?: string;
   order?: PAGINATION_ORDER;
 };
+
+export type CreateLPRequest = {
+  title: string;
+  content: string;
+  thumbnail: string;
+  tags: string[];
+  published: boolean;
+};
+
+export interface CreateLPVariables {
+  request: CreateLPRequest;
+}
