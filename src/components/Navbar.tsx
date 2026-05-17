@@ -1,30 +1,58 @@
-import { NavLink } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const token = localStorage.getItem("accessToken"); // ⭐ 바로 읽기
+  const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
+  const nickname = localStorage.getItem("nickname");
 
   const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/login"; // ⭐ 강제 리렌더
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("nickname");
+    alert("로그아웃 되었습니다.");
+    navigate("/");
+    window.location.reload();
   };
 
   return (
-    <div className="flex gap-4 p-4 bg-gray-100">
-      <NavLink to="/">홈</NavLink>
-      <NavLink to="/">인기 영화</NavLink>
-      <NavLink to="/">평점 높은</NavLink>
+    <nav className="flex items-center justify-between px-6 py-4 bg-gray-100">
+      <div className="flex items-center gap-6">
+        <Link to="/" className="font-bold text-pink-600 text-xl">
+          돌려돌려LP판
+        </Link>
 
-      {!token ? (
-        <>
-          <NavLink to="/login">로그인</NavLink>
-          <NavLink to="/signup">회원가입</NavLink>
-        </>
-      ) : (
-        <>
-          <NavLink to="/mypage">MyPage</NavLink>
-          <button onClick={handleLogout}>로그아웃</button>
-        </>
-      )}
-    </div>
+        <Link to="/" className="hover:text-pink-500">
+          LP 목록
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-4">
+        {token ? (
+          <>
+            <span className="text-sm text-gray-700">
+              {nickname ? `${nickname} 반갑습니다.` : "로그인됨"}
+            </span>
+            <Link to="/mypage" className="hover:text-pink-500">
+              마이페이지
+            </Link>
+            <button onClick={handleLogout} className="hover:text-pink-500">
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="hover:text-pink-500">
+              로그인
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-pink-500 text-white px-3 py-2 rounded"
+            >
+              회원가입
+            </Link>
+          </>
+        )}
+      </div>
+    </nav>
   );
 }

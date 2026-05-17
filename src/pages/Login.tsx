@@ -1,75 +1,74 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = (location.state as any)?.from?.pathname || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const res = await fetch("http://localhost:3000/v1/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "로그인 실패");
-        return;
-      }
-
-      // 🔥 토큰 저장
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-
-      alert("로그인 성공!");
-
-      // ⭐ 강제 이동 (확실하게)
-      window.location.href = "/mypage";
-
-    } catch {
-      alert("서버 오류");
+  const handleLogin = () => {
+    if (!email || !password) {
+      alert("이메일과 비밀번호를 입력해주세요.");
+      return;
     }
+
+    // mock 로그인
+    localStorage.setItem("accessToken", "mock-access-token");
+    localStorage.setItem("refreshToken", "mock-refresh-token");
+    localStorage.setItem("nickname", "연진님");
+
+    alert("로그인 성공");
+    navigate(from, { replace: true });
+    window.location.reload();
+  };
+
+  const handleGoogleLogin = () => {
+    localStorage.setItem("accessToken", "mock-google-access-token");
+    localStorage.setItem("refreshToken", "mock-google-refresh-token");
+    localStorage.setItem("nickname", "연진님");
+
+    alert("구글 로그인 성공");
+    navigate(from, { replace: true });
+    window.location.reload();
   };
 
   return (
-    <div className="flex flex-col items-center mt-20 gap-4 text-white">
-      <h1 className="text-xl">로그인</h1>
+    <div className="flex flex-col items-center justify-center h-screen gap-4 text-black">
+      <h1 className="text-3xl font-bold">로그인</h1>
 
-     <button
-        onClick={() => {
-          window.location.href = "http://localhost:3000/v1/auth/google";
-        }}
-        className="border px-4 py-2 w-64 text-black bg-white"
+      <button
+        onClick={handleGoogleLogin}
+        className="border p-2 w-64"
       >
         구글 로그인
       </button>
 
       <input
+        type="email"
         placeholder="이메일"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="border p-2 text-black"
+        className="border p-2 w-64"
       />
 
       <input
         type="password"
         placeholder="비밀번호"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="border p-2 text-black"
+        className="border p-2 w-64"
       />
 
-      <button onClick={handleLogin} className="bg-pink-500 px-4 py-2">
+      <button
+        onClick={handleLogin}
+        className="bg-pink-500 text-white px-4 py-2 w-64"
+      >
         로그인
       </button>
-
-     
-
     </div>
   );
 }
