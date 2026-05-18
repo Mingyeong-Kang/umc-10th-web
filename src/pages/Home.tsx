@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { getLPList } from "../api/lp";
+import { createLPMutation } from "../api/mutations";
+import LPCreateModal from "../components/LPCreateModal";
 
 type SortType = "latest" | "oldest";
 
 export default function Home() {
   const [sort, setSort] = useState<SortType>("latest");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     data,
@@ -28,6 +32,18 @@ export default function Home() {
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.hasNext ? lastPage.nextPage : undefined,
+  });
+
+  const createLP = useMutation({
+    mutationFn: createLPMutation,
+    onSuccess: () => {
+      setIsModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["lps"] });
+      alert("LP 생성 성공");
+    },
+    onError: (error: Error) => {
+      alert(error.message || "LP 생성 실패");
+    },
   });
 
   useEffect(() => {
@@ -52,6 +68,13 @@ export default function Home() {
 
   return (
     <div className="p-6">
+      <LPCreateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={(input) => createLP.mutate(input)}
+        isPending={createLP.isPending}
+      />
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">LP 목록</h1>
 
@@ -174,7 +197,10 @@ export default function Home() {
         </>
       )}
 
-      <button className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-pink-500 text-white text-2xl shadow-lg">
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-pink-500 text-white text-2xl shadow-lg"
+      >
         +
       </button>
     </div>

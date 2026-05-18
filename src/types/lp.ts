@@ -7,6 +7,9 @@ export interface LP {
   authorId?: number | null;
   author?: string | null;
   createdAt?: string;
+  likes?: number;
+  isLiked?: boolean;
+  tags?: string[];
 }
 
 export interface LPComment {
@@ -14,6 +17,7 @@ export interface LPComment {
   content: string;
   authorName?: string | null;
   createdAt?: string;
+  isMine?: boolean;
 }
 
 export interface InfiniteListResult<T> {

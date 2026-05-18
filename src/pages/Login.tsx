@@ -1,39 +1,44 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getMe } from "../api/user";
+import { googleLoginMutation, loginMutation } from "../api/mutations";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const from = (location.state as any)?.from?.pathname || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const login = useMutation({
+    mutationFn: loginMutation,
+    onSuccess: async () => {
+      const me = await getMe();
+      queryClient.setQueryData(["me"], me);
+      alert("로그인 성공");
+      navigate(from, { replace: true });
+    },
+    onError: (error: Error) => {
+      alert(error.message || "로그인 실패");
+    },
+  });
+
+  const googleLogin = useMutation({
+    mutationFn: googleLoginMutation,
+    onSuccess: async () => {
+      const me = await getMe();
+      queryClient.setQueryData(["me"], me);
+      alert("구글 로그인 성공");
+      navigate(from, { replace: true });
+    },
+  });
+
   const handleLogin = () => {
-    if (!email || !password) {
-      alert("이메일과 비밀번호를 입력해주세요.");
-      return;
-    }
-
-    // mock 로그인
-    localStorage.setItem("accessToken", "mock-access-token");
-    localStorage.setItem("refreshToken", "mock-refresh-token");
-    localStorage.setItem("nickname", "연진님");
-
-    alert("로그인 성공");
-    navigate(from, { replace: true });
-    window.location.reload();
-  };
-
-  const handleGoogleLogin = () => {
-    localStorage.setItem("accessToken", "mock-google-access-token");
-    localStorage.setItem("refreshToken", "mock-google-refresh-token");
-    localStorage.setItem("nickname", "연진님");
-
-    alert("구글 로그인 성공");
-    navigate(from, { replace: true });
-    window.location.reload();
+    login.mutate({ email, password });
   };
 
   return (
@@ -41,7 +46,7 @@ export default function Login() {
       <h1 className="text-3xl font-bold">로그인</h1>
 
       <button
-        onClick={handleGoogleLogin}
+        onClick={() => googleLogin.mutate()}
         className="border p-2 w-64"
       >
         구글 로그인
@@ -66,8 +71,9 @@ export default function Login() {
       <button
         onClick={handleLogin}
         className="bg-pink-500 text-white px-4 py-2 w-64"
+        disabled={login.isPending}
       >
-        로그인
+        {login.isPending ? "로그인 중..." : "로그인"}
       </button>
     </div>
   );
