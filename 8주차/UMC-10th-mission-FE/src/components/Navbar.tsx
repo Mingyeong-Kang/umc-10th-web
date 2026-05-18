@@ -2,12 +2,21 @@
 
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext";
+import { HamburgerButton } from "./HamburgerButton";
 
-export const Navbar = () => {
+// Props 인터페이스 정의
+interface NavbarProps {
+    isOpen: boolean;
+    onToggle: () => void;
+}
+
+export const Navbar = ({isOpen, onToggle}: NavbarProps) => {
     const {accessToken} = useAuth();
+
     return (
     <nav className="bg-white dark:bg-gray-900 shadow-md fixed w-full z-10">
         <div className="flex items-center justify-between p-4">
+            <HamburgerButton isOpen={isOpen} onClick={onToggle}></HamburgerButton>
             <Link 
             to = "/"
             className="text-xl font-bold text-gray-900 dark:text-white"
