@@ -19,7 +19,6 @@ export const useIntersectionObserver = <T extends HTMLElement>({
     const target = targetRef.current;
     if (!target || !enabled) return;
 
-    
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
