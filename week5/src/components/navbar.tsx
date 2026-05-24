@@ -17,6 +17,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     { to: "/movies/upcoming", label: "개봉 예정" },
     { to: "/movies/top-rated", label: "평점 높은" },
     { to: "/lps", label: "LP 목록" },
+    { to: "/search", label: "검색" },
   ];
 
   const handleLogout = () => {
@@ -58,7 +59,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           to="/"
           className="text-pink-500 font-bold text-xl shrink-0"
         >
-          🎵 돌려돌려LP판
+          🎵 젼졔의 LP & MOVIE
         </NavLink>
 
         {/* 메뉴 */}

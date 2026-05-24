@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useLPListQuery from "../hooks/useLPListQuery";
 import { PAGINATION_ORDER } from "../enums/common";
 import CreateLPModal from "../components/CreateLPModal";
+import useThrottle from "../hooks/useThrottle";
 
 interface LpItem {
   id: number;
@@ -98,25 +99,26 @@ export default function LPListPage() {
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  const throttledFetchNextPage = useThrottle(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      console.log("[Throttle] fetchNextPage 호출");
+      fetchNextPage();
+    }
+  }, 1000);
+
   useEffect(() => {
     if (!sentinelRef.current) return;
-
     const el = sentinelRef.current;
 
     const observer = new IntersectionObserver((entries) => {
-      if (
-        entries[0].isIntersecting &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
-        fetchNextPage();
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        throttledFetchNextPage();
       }
     });
 
     observer.observe(el);
-
     return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [throttledFetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <>
@@ -198,13 +200,11 @@ export default function LPListPage() {
               </div>
             )}
 
-            {/* 무한스크롤 트리거 */}
             <div
               ref={sentinelRef}
               className="h-2"
             />
 
-            {/* 추가 로딩 */}
             {isFetchingNextPage && (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                 {Array.from({ length: 4 }).map(
@@ -217,7 +217,6 @@ export default function LPListPage() {
           </>
         )}
 
-        {/* 플로팅 버튼 */}
         <button
           onClick={() =>
             setIsCreateModalOpen(true)
@@ -229,7 +228,6 @@ export default function LPListPage() {
         </button>
       </div>
 
-      {/* 모달 */}
       {isCreateModalOpen && (
         <CreateLPModal
           onClose={() =>

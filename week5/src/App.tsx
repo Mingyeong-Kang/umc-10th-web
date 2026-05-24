@@ -12,6 +12,7 @@ import GoogleCallback from "./pages/GoogleCallback";
 import InfinitePage from "./pages/infinite";
 import LPListPage from "./pages/lps";
 import LPDetailPage from "./pages/lpDetail";
+import SearchPage from "./pages/SearchPage";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +28,9 @@ const router = createBrowserRouter([
       { path: "signup", element: <SignupPage /> },
       { path: "v1/auth/google/callback", element: <GoogleCallback /> },
       { path: "infinite", element: <InfinitePage /> },
-
       { path: "lps", element: <LPListPage /> },
+      { path: "search", element: <SearchPage /> },
+
 
       {
         element: <ProtectedLayout />,
