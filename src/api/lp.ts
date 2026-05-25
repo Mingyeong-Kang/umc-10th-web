@@ -4,13 +4,33 @@ import { mockComments, mockLPs, sleep } from "./mockDb";
 export async function getLPList({
   pageParam = 1,
   sort = "latest",
+  keyword = "",
 }: {
   pageParam?: number;
   sort?: string;
+  keyword?: string;
 }): Promise<InfiniteListResult<LP>> {
-  await sleep(700);
+  await sleep(500);
 
-  const sorted = [...mockLPs].sort((a, b) => {
+  const lowerKeyword = keyword.trim().toLowerCase();
+
+  const filtered = mockLPs.filter((lp) => {
+    if (!lowerKeyword) return true;
+
+    const title = lp.title?.toLowerCase() ?? "";
+    const author = lp.author?.toLowerCase() ?? "";
+    const content = lp.content?.toLowerCase() ?? "";
+    const tags = lp.tags?.join(" ").toLowerCase() ?? "";
+
+    return (
+      title.includes(lowerKeyword) ||
+      author.includes(lowerKeyword) ||
+      content.includes(lowerKeyword) ||
+      tags.includes(lowerKeyword)
+    );
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
     const timeA = new Date(a.createdAt ?? "").getTime();
     const timeB = new Date(b.createdAt ?? "").getTime();
     return sort === "oldest" ? timeA - timeB : timeB - timeA;
