@@ -16,6 +16,7 @@ import LpDetailPage from "./pages/LpDetailPage.tsx";
 import ThrottlePage from "./pages/ThrottlePage.tsx";
 
 import { AuthProvider } from "./context/AuthContext.tsx";
+import CartPage from "./pages/CartPage";
 
 const publicRoutes: RouteObject[] = [
   {
@@ -37,6 +38,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "throttle",
         element: <ThrottlePage />,
+      },
+      {
+        path: "cart",
+        element: <CartPage />,
       },
     ],
   },
