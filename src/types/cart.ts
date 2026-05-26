@@ -6,3 +6,5 @@ export interface Lp {
   img: string;
   amount: number;
 }
+
+export type CartItems = Lp[];

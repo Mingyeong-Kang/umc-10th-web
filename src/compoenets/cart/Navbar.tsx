@@ -1,32 +1,44 @@
+import { useEffect, type JSX } from "react";
+import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/useCustonRedux";
-import { calculateTotals } from "../../slices/cartSlice";
+import { useCartActions, useCartInfo } from "../../hooks/useCartStore";
 
-const Navbar = () => {
-  const { amount, cartItems } = useAppSelector((state) => state.cart);
-  const dispatch = useAppDispatch();
+const Navbar = (): JSX.Element => {
+  const { amount, cartItems } = useCartInfo();
+  const { calculateTotals } = useCartActions();
 
   useEffect(() => {
-    dispatch(calculateTotals());
-  }, [dispatch, cartItems]);
+    calculateTotals();
+  }, [cartItems, calculateTotals]);
 
   return (
-    <div className="flex items-center justify-between bg-gray-800 p-4 text-white">
-      <h1
-        onClick={() => {
-          window.location.href = "/";
-        }}
-        className="cursor-pointer text-2xl font-semibold"
-      >
-        Ohthani Ahn
-      </h1>
+    <nav className="fixed z-10 w-full bg-white shadow-md dark:bg-gray-900">
+      <div className="flex items-center justify-between p-4">
+        <Link
+          to="/"
+          className="text-xl font-bold text-gray-900 dark:text-white"
+        >
+          SpinningSpinning Dolimpan
+        </Link>
 
-      <div className="flex items-center space-x-2">
-        <FaShoppingCart className="text-2xl" />
-        <span className="text-xl font-medium">{amount}</span>
+        <div className="flex items-center gap-6">
+          <Link
+            to="/search"
+            className="text-gray-700 hover:text-blue-500 dark:text-gray-300"
+          >
+            검색
+          </Link>
+
+          <Link
+            to="/cart"
+            className="flex items-center gap-2 text-gray-700 hover:text-blue-500 dark:text-gray-300"
+          >
+            <FaShoppingCart className="text-xl" />
+            <span className="font-medium">{amount}</span>
+          </Link>
+        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

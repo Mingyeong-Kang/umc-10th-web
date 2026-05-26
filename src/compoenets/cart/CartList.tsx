@@ -1,16 +1,15 @@
 import CartItem from "./CartItem";
-import { useAppSelector } from "../../hooks/useCustonRedux";
+import { useCartInfo } from "../../hooks/useCartStore";
+import type { JSX } from "react/jsx-runtime";
 
-const CartList = () => {
-  const { cartItems } = useAppSelector((state) => state.cart);
+const CartList = (): JSX.Element => {
+  const { cartItems } = useCartInfo();
 
   return (
-    <div className="flex flex-col justify-center">
-      <ul>
-        {cartItems.map((item) => (
-          <CartItem key={item.id} lp={item} />
-        ))}
-      </ul>
+    <div className="mx-auto flex max-w-5xl flex-col pt-24">
+      {cartItems.map((item) => (
+        <CartItem key={item.id} lp={item} />
+      ))}
     </div>
   );
 };

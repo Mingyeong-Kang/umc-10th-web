@@ -1,24 +1,13 @@
-import { Provider } from "react-redux";
-import store from "../store/store";
-import Navbar from "../compoenets/cart/Navbar";
 import CartList from "../compoenets/cart/CartList";
 import PriceBox from "../compoenets/cart/PriceBox";
+import type { JSX } from "react/jsx-runtime";
 
-const CartPageContent = () => {
+const CartPage = (): JSX.Element => {
   return (
-    <div className="min-h-screen bg-white text-black">
-      <Navbar />
+    <main className="min-h-screen bg-white text-gray-900 pt-20">
       <CartList />
       <PriceBox />
-    </div>
-  );
-};
-
-const CartPage = () => {
-  return (
-    <Provider store={store}>
-      <CartPageContent />
-    </Provider>
+    </main>
   );
 };
 
