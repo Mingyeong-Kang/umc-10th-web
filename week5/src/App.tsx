@@ -13,6 +13,9 @@ import InfinitePage from "./pages/infinite";
 import LPListPage from "./pages/lps";
 import LPDetailPage from "./pages/lpDetail";
 import SearchPage from "./pages/SearchPage";
+import UseReducerPage from "./05-useReducer/UseReducerPage";
+import UseReducerCompany from "./05-useReducer/UseReducerCompany";
+import CartPage from "./pages/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +33,9 @@ const router = createBrowserRouter([
       { path: "infinite", element: <InfinitePage /> },
       { path: "lps", element: <LPListPage /> },
       { path: "search", element: <SearchPage /> },
+      { path: "useReduce", element: <UseReducerPage />},
+      { path: "useReducerCompany", element: <UseReducerCompany /> },
+      { path: '/cart', element: <CartPage /> },
 
 
       {
