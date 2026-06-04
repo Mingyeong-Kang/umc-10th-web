@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLPDetail } from "../apis/lp";
+import { QUERY_KEY } from "../constants/key";
 
 const useLPDetailQuery = (lpid: string | undefined) => {
   return useQuery({
-    queryKey: ["lp", lpid],
-    queryFn: () => getLPDetail(Number(lpid)),  // string → number 변환
-    enabled: !!lpid,  // lpid 없으면 실행 안 함
+    queryKey: QUERY_KEY.lpDetail(Number(lpid)),
+    queryFn: () => getLPDetail(Number(lpid)),
+    enabled: !!lpid,
   });
 };
 
