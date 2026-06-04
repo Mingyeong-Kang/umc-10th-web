@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import useCartStore from "../store/useCartStore";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -9,6 +10,7 @@ interface NavbarProps {
 const Navbar = ({ onMenuClick }: NavbarProps) => {
   const navigate = useNavigate();
   const { name, logout } = useContext(AuthContext);
+  const { amount } = useCartStore();
 
   const navLinks = [
     { to: "/", label: "홈" },
@@ -21,7 +23,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   ];
 
   const handleLogout = () => {
-    logout();            // 🔥 Context 상태 초기화 (핵심)
+    logout();
     navigate("/login");
   };
 
@@ -85,6 +87,34 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
       {/* 오른쪽 */}
       <div className="flex items-center gap-3">
 
+        {/* 장바구니 버튼 */}
+        <button
+          onClick={() => navigate("/cart")}
+          className="relative text-white hover:text-pink-400 transition"
+          aria-label="장바구니"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm6 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {amount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+              {amount}
+            </span>
+          )}
+        </button>
+
         {/* 마이페이지 */}
         <button
           onClick={() => navigate("/my")}
@@ -99,7 +129,6 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             <span className="text-white text-sm hidden sm:block">
               {name}님 반갑습니다.
             </span>
-
             <button
               onClick={handleLogout}
               className="px-4 py-1.5 border border-gray-500 rounded-lg text-white text-sm hover:bg-gray-700 transition"
@@ -115,7 +144,6 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             >
               로그인
             </button>
-
             <button
               onClick={() => navigate("/signup")}
               className="px-4 py-1.5 bg-pink-500 rounded-lg text-white text-sm hover:bg-pink-600 transition"
