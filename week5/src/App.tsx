@@ -6,10 +6,16 @@ import MovieDetailPage from "./pages/moviedetail";
 import NotFound from "./pages/not-found";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
-import AuthProvider from "./context/AuthContext";
 import MyPage from "./pages/MyPage";
 import ProtectedLayout from "./layout/ProtectedLayout";
 import GoogleCallback from "./pages/GoogleCallback";
+import InfinitePage from "./pages/infinite";
+import LPListPage from "./pages/lps";
+import LPDetailPage from "./pages/lpDetail";
+import SearchPage from "./pages/SearchPage";
+import UseReducerPage from "./05-useReducer/UseReducerPage";
+import UseReducerCompany from "./05-useReducer/UseReducerCompany";
+import CartPage from "./pages/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -18,17 +24,25 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "home", element: <HomePage /> },
       { path: "movies/:category", element: <MoviesPage /> },
       { path: "movie/:movieId", element: <MovieDetailPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "v1/auth/google/callback", element: <GoogleCallback /> },
+      { path: "infinite", element: <InfinitePage /> },
+      { path: "lps", element: <LPListPage /> },
+      { path: "search", element: <SearchPage /> },
+      { path: "useReduce", element: <UseReducerPage />},
+      { path: "useReducerCompany", element: <UseReducerCompany /> },
+      { path: '/cart', element: <CartPage /> },
 
-      // 🔒 로그인이 필요한 페이지
+
       {
         element: <ProtectedLayout />,
         children: [
           { path: "my", element: <MyPage /> },
+          { path: "lp/:lpid", element: <LPDetailPage /> },
         ],
       },
     ],
@@ -36,11 +50,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

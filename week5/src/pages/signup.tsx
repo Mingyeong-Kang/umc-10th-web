@@ -1,8 +1,10 @@
+// src/pages/signup.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineMail } from "react-icons/ai";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
@@ -68,7 +70,17 @@ const SignupPage = () => {
       navigate("/login");
     } catch (error) {
       console.error(error);
-      alert("회원가입 실패");
+      if (isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          alert("이미 사용 중인 이메일입니다.\n다른 이메일로 가입해주세요.");
+        } else if (error.response?.status === 400) {
+          alert("입력 정보를 다시 확인해주세요.");
+        } else {
+          alert(`회원가입 실패 (${error.response?.status ?? "알 수 없는 오류"})`);
+        }
+      } else {
+        alert("회원가입 실패. 다시 시도해주세요.");
+      }
     }
   };
 
@@ -129,7 +141,7 @@ const SignupPage = () => {
             <button
               type="button"
               onClick={nextEmailStep}
-              className="w-full py-3 rounded-md bg-pink-500 mt-2"
+              className="w-full py-3 rounded-md bg-pink-500 mt-2 hover:bg-pink-600 transition"
             >
               다음
             </button>
@@ -184,7 +196,7 @@ const SignupPage = () => {
             <button
               type="button"
               onClick={nextPasswordStep}
-              className="w-full py-3 rounded-md bg-pink-500 mt-2"
+              className="w-full py-3 rounded-md bg-pink-500 mt-2 hover:bg-pink-600 transition"
             >
               다음
             </button>
@@ -218,9 +230,9 @@ const SignupPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-md bg-pink-500 mt-2"
+              className="w-full py-3 rounded-md bg-pink-500 mt-2 hover:bg-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              회원가입 완료
+              {isSubmitting ? "처리 중..." : "회원가입 완료"}
             </button>
           </form>
         )}

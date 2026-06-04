@@ -27,3 +27,9 @@ export const postRefresh = async (refreshToken: string) => {
     });
     return data;
 };
+
+
+export const deleteMyAccount = async () => {
+  const { data } = await axiosInstance.delete("/v1/users");
+  return data;
+};

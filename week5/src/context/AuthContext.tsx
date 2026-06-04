@@ -1,76 +1,60 @@
-import {
-  createContext,
-  type ReactNode,
-} from "react";
-import { postSignin } from "../apis/auth";
-import type { RequestSigninDto } from "../types/auth";
-import useLocalStorage from "../hooks/useLocalStorage";
+import { createContext, useState, type ReactNode } from "react";
 
 interface AuthContextType {
   accessToken: string | null;
-  refreshToken: string | null;
-  login: (signinData: RequestSigninDto) => Promise<void>;
-  logout: () => Promise<void>;
+  name: string | null;
+  setAuth: (token: string, name: string) => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   accessToken: null,
-  refreshToken: null,
-  login: async () => {},
-  logout: async () => {},
+  name: null,
+  setAuth: () => {},
+  logout: () => {},
 });
 
-interface AuthProviderProps {
+export default function AuthProvider({
+  children,
+}: {
   children: ReactNode;
-}
+}) {
+  const [accessToken, setAccessToken] = useState<string | null>(
+    localStorage.getItem("accessToken")
+  );
 
-const AuthProvider = ({ children }: AuthProviderProps) => {
-  const {
-    storedValue: accessToken,
-    setValue: setAccessToken,
-    removeValue: removeAccessToken,
-  } = useLocalStorage<string | null>("accessToken", null);
+  const [name, setName] = useState<string | null>(
+    localStorage.getItem("name")
+  );
 
-  const {
-    storedValue: refreshToken,
-    setValue: setRefreshToken,
-    removeValue: removeRefreshToken,
-  } = useLocalStorage<string | null>("refreshToken", null);
+  // 🔥 로그인 상태 세팅 함수
+  const setAuth = (token: string, userName: string) => {
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("name", userName);
 
-  const login = async (signinData: RequestSigninDto): Promise<void> => {
-    try {
-      const response = await postSignin(signinData);
-    
-      const newAccessToken = response.data.accessToken;
-      const newRefreshToken = response.data.refreshToken;
-
-      setAccessToken(newAccessToken);
-      setRefreshToken(newRefreshToken);
-
-      alert("로그인 성공!");
-    } catch (error) {
-      console.error("로그인 오류", error);
-      alert("로그인 실패");
-    }
+    setAccessToken(token);
+    setName(userName);
   };
 
-  const logout = async (): Promise<void> => {
-    removeAccessToken();
-    removeRefreshToken();
+  // 로그아웃
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("name");
+
+    setAccessToken(null);
+    setName(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         accessToken,
-        refreshToken,
-        login,
+        name,
+        setAuth,
         logout,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
-
-export default AuthProvider;
+}

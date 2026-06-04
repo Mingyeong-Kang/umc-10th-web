@@ -1,6 +1,36 @@
+import { PAGINATION_ORDER } from "../enums/common";
+
 export type CommonResponse<T> = {
-    status: boolean;
-    statusCode: number;
-    message: string;
-    data: T;
+  status: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
 };
+
+export type CursorBasedResponse<T> = {
+  status: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+  nextCursor: number;
+  hasNext: boolean;
+};
+
+export type PaginationDto = {
+  cursor?: number;
+  limit?: number;
+  search?: string;
+  order?: PAGINATION_ORDER;
+};
+
+export type CreateLPRequest = {
+  title: string;
+  content: string;
+  thumbnail: string;
+  tags: string[];
+  published: boolean;
+};
+
+export interface CreateLPVariables {
+  request: CreateLPRequest;
+}

@@ -7,15 +7,22 @@ const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
   const { setValue: setAccessToken } = useLocalStorage("accessToken", "");
   const { setValue: setRefreshToken } = useLocalStorage("refreshToken", "");
+  const { setValue : setName } = useLocalStorage("name", "");
 
   useEffect(() => {
     const accessToken = searchParams.get("accessToken");
     const refreshToken = searchParams.get("refreshToken");
+    const name = searchParams.get("name");
 
     if (accessToken && refreshToken) {
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
-      navigate("/");
+
+      if(name){
+        setName(decodeURIComponent(name));
+      }
+
+      window.location.href = "/";
     } else {
       alert("구글 로그인 실패");
       navigate("/login");
