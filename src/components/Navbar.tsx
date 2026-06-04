@@ -1,76 +1,64 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import ConfirmModal from "./ConfirmModal";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMe } from "../api/user";
+import { logoutMutation } from "../api/mutations";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("accessToken");
-  const nickname = localStorage.getItem("nickname");
-  const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("nickname");
-      return true;
-    },
+  const { data: me } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
+  const logout = useMutation({
+    mutationFn: logoutMutation,
     onSuccess: () => {
+      queryClient.setQueryData(["me"], null);
       alert("로그아웃 되었습니다.");
-      navigate("/login");
-      window.location.reload();
+      navigate("/");
     },
   });
 
   return (
-    <>
-      <nav className="flex items-center justify-between px-6 py-4 bg-gray-100">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="font-bold text-pink-600 text-xl">
-            돌려돌려LP판
-          </Link>
+    <header className="sticky top-0 z-30 h-16 border-b bg-white">
+      <div className="mx-auto flex h-full items-center justify-between px-4 md:px-6">
+        <Link to="/" className="font-bold text-pink-600 text-xl">
+          돌려돌려LP판
+        </Link>
 
-          <Link to="/" className="hover:text-pink-500">
-            LP 목록
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {token ? (
+        <div className="flex items-center gap-3">
+          {me ? (
             <>
-              <span className="text-sm text-gray-700">
-                {nickname ? `${nickname} 반갑습니다.` : "로그인됨"}
+              <span className="hidden text-sm text-gray-700 md:block">
+                {me.nickname} 반갑습니다.
               </span>
-              <Link to="/mypage" className="hover:text-pink-500">
+              <Link to="/mypage" className="text-sm hover:text-pink-500">
                 마이페이지
               </Link>
-              <button onClick={() => setIsOpen(true)} className="hover:text-pink-500">
+              <button
+                onClick={() => logout.mutate()}
+                className="text-sm hover:text-pink-500"
+              >
                 로그아웃
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-pink-500">
+              <Link to="/login" className="text-sm hover:text-pink-500">
                 로그인
               </Link>
               <Link
                 to="/signup"
-                className="bg-pink-500 text-white px-3 py-2 rounded"
+                className="rounded bg-pink-500 px-3 py-2 text-sm text-white"
               >
                 회원가입
               </Link>
             </>
           )}
         </div>
-      </nav>
-
-      <ConfirmModal
-        isOpen={isOpen}
-        title="정말 로그아웃하시겠습니까?"
-        onConfirm={() => logoutMutation.mutate()}
-        onCancel={() => setIsOpen(false)}
-      />
-    </>
+      </div>
+    </header>
   );
 }
