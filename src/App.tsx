@@ -13,15 +13,11 @@ import MyPage from "./pages/MyPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage.tsx";
 import LpDetailPage from "./pages/LpDetailPage.tsx";
+import ThrottlePage from "./pages/ThrottlePage.tsx";
 
 import { AuthProvider } from "./context/AuthContext.tsx";
+import CartPage from "./pages/CartPage";
 
-// 1. 홈페이지
-// 2. 로그인 페이지
-// 3. 회원가입 페이지
-// 4. LP 상세 페이지
-
-// publicRoutes : 인증 없이 접근 가능한 라우트
 const publicRoutes: RouteObject[] = [
   {
     path: "/",
@@ -31,16 +27,26 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
-      { path: "lps/:lpId", element: <LpDetailPage /> },
       {
         path: "v1/auth/google/callback",
         element: <GoogleLoginRedirectPage />,
+      },
+      {
+        path: "lps/:lpId",
+        element: <LpDetailPage />,
+      },
+      {
+        path: "throttle",
+        element: <ThrottlePage />,
+      },
+      {
+        path: "cart",
+        element: <CartPage />,
       },
     ],
   },
 ];
 
-// protectedRoutes : 인증이 필요한 라우트
 const protectedRoutes: RouteObject[] = [
   {
     path: "/",

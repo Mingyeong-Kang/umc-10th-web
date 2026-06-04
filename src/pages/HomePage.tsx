@@ -5,9 +5,12 @@ import useGetInfiniteLpList from "../hooks/queries/useGetLpList.ts";
 import { PAGINATION_ORDER } from "../enums/common.ts";
 import LpCard from "../compoenets/LpCard/LpCard.tsx";
 import LpCardSkeletonList from "../compoenets/LpCard/LpCardSkeletonList.tsx";
+import useDebounce from "../hooks/useDebounce.ts";
+import { SEARCH_DEBOUNCE_DELAY } from "../constants/delay.ts";
 
 const HomePage = () => {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, SEARCH_DEBOUNCE_DELAY);
 
   const {
     data: lps,
@@ -16,7 +19,7 @@ const HomePage = () => {
     isPending,
     fetchNextPage,
     isError,
-  } = useGetInfiniteLpList(10, search, PAGINATION_ORDER.desc);
+  } = useGetInfiniteLpList(10, debouncedSearch, PAGINATION_ORDER.desc);
 
   const { ref, inView } = useInView({
     threshold: 0,
@@ -29,11 +32,11 @@ const HomePage = () => {
   }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   if (isError) {
-    return <div className="mt-20 text-white">Error...</div>;
+    return <div className="pt-24 text-white">Error...</div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4 pt-24 pb-6">
       <input
         value={search}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
