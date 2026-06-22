@@ -85,6 +85,9 @@ export default function Sidebar() {
           <NavLink to="/" className={navClass} onClick={() => setIsOpen(false)}>
             LP 목록
           </NavLink>
+          <NavLink to="/playlist" className={navClass} onClick={() => setIsOpen(false)}>
+            🎵 플레이리스트 장바구니
+          </NavLink>
           <NavLink to="/mypage" className={navClass} onClick={() => setIsOpen(false)}>
             마이페이지
           </NavLink>

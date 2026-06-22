@@ -1,3 +1,11 @@
+export interface Me {
+  id: number;
+  nickname: string;
+  email?: string;
+  bio?: string;
+  image?: string;
+}
+
 export interface LP {
   id: number;
   title: string;
@@ -9,6 +17,7 @@ export interface LP {
   createdAt?: string;
   likes?: number;
   isLiked?: boolean;
+  likedByMe?: boolean;
   tags?: string[];
 }
 
@@ -16,6 +25,8 @@ export interface LPComment {
   id: number;
   content: string;
   authorName?: string | null;
+  authorId?: number | null;
+  lpId?: number;
   createdAt?: string;
   isMine?: boolean;
 }

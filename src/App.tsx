@@ -7,6 +7,7 @@ import LPDetail from "./pages/LPDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
+import PlaylistPage from "./pages/PlaylistPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/playlist" element={<PlaylistPage />} />
         </Routes>
       </main>
     </BrowserRouter>

@@ -1,4 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useCartStore } from "../stores/useCartStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMe } from "../api/user";
 import { logoutMutation } from "../api/mutations";
@@ -6,6 +7,7 @@ import { logoutMutation } from "../api/mutations";
 export default function Navbar() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const amount = useCartStore((state) => state.amount);
 
   const { data: me } = useQuery({
     queryKey: ["me"],
@@ -29,6 +31,23 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
+          {/* 플레이리스트 장바구니 링크 */}
+          <NavLink
+            to="/playlist"
+            className={({ isActive }) =>
+              `relative flex items-center gap-1 text-sm transition ${
+                isActive ? "text-pink-600 font-semibold" : "text-gray-600 hover:text-pink-500"
+              }`
+            }
+          >
+            🎵
+            {amount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 text-[10px] font-bold text-white">
+                {amount}
+              </span>
+            )}
+          </NavLink>
+
           {me ? (
             <>
               <span className="hidden text-sm text-gray-700 md:block">
