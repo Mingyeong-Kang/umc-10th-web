@@ -31,6 +31,18 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
+          {/* 영화 검색 링크 */}
+          <NavLink
+            to="/movies"
+            className={({ isActive }) =>
+              `text-sm transition ${
+                isActive ? "text-pink-600 font-semibold" : "text-gray-600 hover:text-pink-500"
+              }`
+            }
+          >
+            🎬
+          </NavLink>
+
           {/* 플레이리스트 장바구니 링크 */}
           <NavLink
             to="/playlist"

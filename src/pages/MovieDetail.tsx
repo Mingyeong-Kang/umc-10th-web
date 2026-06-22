@@ -1,85 +1,126 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-interface MovieDetailType {
-  title: string;
-  overview: string;
-  backdrop_path: string;
-}
-
-interface Cast {
-  id: number;
-  name: string;
-  profile_path: string;
-}
+import { Link, useParams } from "react-router-dom";
+import { BACKDROP_URL, POSTER_URL, getMovieDetail } from "../api/movie";
+import type { MovieDetail as MovieDetailType } from "../types/movie";
 
 export default function MovieDetail() {
-  const { movieId } = useParams();
-
+  const { movieId } = useParams<{ movieId: string }>();
   const [movie, setMovie] = useState<MovieDetailType | null>(null);
-  const [cast, setCast] = useState<Cast[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchDetail = async () => {
-      try {
-        setLoading(true);
-
-        // 영화 상세
-        const res1 = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}?api_key=${import.meta.env.VITE_API_KEY}`
-        );
-        const data1 = await res1.json();
-
-        // 출연진
-        const res2 = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${import.meta.env.VITE_API_KEY}`
-        );
-        const data2 = await res2.json();
-
-        setMovie(data1);
-        setCast(data2.cast.slice(0, 10));
-      } catch (e) {
-        setError("에러 발생");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDetail();
+    if (!movieId) return;
+    setLoading(true);
+    getMovieDetail(Number(movieId))
+      .then(setMovie)
+      .catch(() => setError("영화 정보를 불러오지 못했습니다."))
+      .finally(() => setLoading(false));
   }, [movieId]);
 
-  if (loading) return <div className="text-center mt-10">로딩중...</div>;
-  if (error) return <div className="text-red-500 text-center">{error}</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-pink-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-red-500">{error || "영화를 찾을 수 없습니다."}</p>
+        <Link to="/movies" className="mt-4 inline-block text-sm text-pink-500 underline">
+          영화 검색으로 돌아가기
+        </Link>
+      </div>
+    );
+  }
+
+  const runtime = movie.runtime
+    ? `${Math.floor(movie.runtime / 60)}시간 ${movie.runtime % 60}분`
+    : "미정";
 
   return (
-    <div className="p-5 text-white bg-black min-h-screen">
-      {/* 배경 */}
-      <div
-        className="h-64 bg-cover bg-center rounded"
-        style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie?.backdrop_path})`,
-        }}
-      />
+    <div className="pb-12">
+      {/* 배경 배너 */}
+      {movie.backdrop_path && (
+        <div
+          className="h-64 bg-cover bg-center md:h-80"
+          style={{ backgroundImage: `url(${BACKDROP_URL(movie.backdrop_path)})` }}
+        >
+          <div className="h-full w-full bg-black/40" />
+        </div>
+      )}
 
-      {/* 정보 */}
-      <h1 className="text-3xl mt-5">{movie?.title}</h1>
-      <p className="mt-2 text-gray-300">{movie?.overview}</p>
-
-      {/* 출연진 */}
-      <h2 className="mt-6 text-xl">출연진</h2>
-
-      <div className="flex gap-4 overflow-x-scroll mt-3">
-        {cast.map((actor) => (
-          <div key={actor.id} className="text-center">
+      <div className="mx-auto max-w-4xl p-6">
+        <div className="flex flex-col gap-6 md:flex-row">
+          {/* 포스터 */}
+          {movie.poster_path && (
             <img
-              src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
-              className="w-20 h-20 rounded-full"
+              src={POSTER_URL(movie.poster_path)}
+              alt={movie.title}
+              className="-mt-20 hidden w-40 self-start rounded-xl shadow-lg md:block"
             />
-            <p className="text-sm mt-1">{actor.name}</p>
+          )}
+
+          {/* 정보 */}
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{movie.title}</h1>
+            {movie.tagline && (
+              <p className="mt-1 italic text-gray-500">{movie.tagline}</p>
+            )}
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {movie.genres.map((g) => (
+                <span
+                  key={g.id}
+                  className="rounded-full bg-pink-50 px-3 py-1 text-xs font-medium text-pink-600"
+                >
+                  {g.name}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-4 space-y-1.5 text-sm text-gray-600">
+              <p>
+                <span className="font-medium text-gray-800">평점</span>{" "}
+                <span className="text-yellow-500">★ {movie.vote_average.toFixed(1)}</span>
+              </p>
+              <p>
+                <span className="font-medium text-gray-800">개봉일</span>{" "}
+                {movie.release_date
+                  ? new Date(movie.release_date).toLocaleDateString("ko-KR")
+                  : "미정"}
+              </p>
+              <p>
+                <span className="font-medium text-gray-800">러닝타임</span> {runtime}
+              </p>
+              <p>
+                <span className="font-medium text-gray-800">원제</span> {movie.original_title}
+              </p>
+            </div>
+
+            <p className="mt-5 text-sm leading-relaxed text-gray-700">{movie.overview}</p>
+
+            <div className="mt-6 flex gap-3">
+              <a
+                href={`https://www.imdb.com/find?q=${encodeURIComponent(movie.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-bold text-black hover:bg-yellow-500"
+              >
+                IMDb에서 검색하기 ↗
+              </a>
+              <Link
+                to="/movies"
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+              >
+                목록으로
+              </Link>
+            </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

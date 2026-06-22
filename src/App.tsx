@@ -8,6 +8,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
 import PlaylistPage from "./pages/PlaylistPage";
+import MoviesPage from "./pages/MoviesPage";
+import MovieDetail from "./pages/MovieDetail";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
             }
           />
           <Route path="/playlist" element={<PlaylistPage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/:movieId" element={<MovieDetail />} />
         </Routes>
       </main>
     </BrowserRouter>
